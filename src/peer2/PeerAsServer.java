@@ -1,5 +1,7 @@
 package peer2;
 
+import fileOwner.ChunkStatus;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -91,7 +93,7 @@ public class PeerAsServer implements Runnable {
 
             String[] input = request.split(":"); // TODO what if the command is invalid
             String dir = new File(".").getCanonicalPath();
-            File fileUpload = new File(dir + "\\src\\" + input[1] + "." + "bin"); // TODO change to db
+            File fileUpload = new File(dir + "\\src\\peer2\\" + input[1] + "." + "bin"); // TODO change to db
             byte[] byteData = new byte[(int) fileUpload.length()];
             FileInputStream fileInputStream = new FileInputStream(fileUpload);
             fileInputStream.read(byteData);

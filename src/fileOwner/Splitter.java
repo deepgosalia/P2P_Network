@@ -23,7 +23,7 @@ public class Splitter {
 
 
         String current_dir = new File(".").getCanonicalPath();
-        String path = current_dir + "\\src\\" + fileName + "." + fileExtension; // TODO remove src while submitting code \\ is for windows
+        String path = current_dir + "\\src\\fileOwner\\" + fileName + "." + fileExtension; // TODO remove src while submitting code \\ is for windows
 
         String extension = ".bin";  // To store as binary data
 
@@ -31,7 +31,7 @@ public class Splitter {
 
         while (fis.available() != 0) {
             j = 0;
-            s = current_dir + "\\src\\" + x + extension;
+            s = current_dir + "\\src\\fileOwner\\" + x + extension;
             FileOutputStream fos = new FileOutputStream(s);
             while (j <= 100000 && fis.available() != 0) {  // TODO 100000 ?????
                 read_bytes = fis.read(binaryData, 0, 102400); // 100KB chunks

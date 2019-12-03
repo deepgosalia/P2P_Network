@@ -1,5 +1,9 @@
 package peer5;
 
+import fileOwner.ChunkStatus;
+import peer1.PeerAsClient;
+import peer1.PeerAsServer;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Map;
@@ -11,8 +15,8 @@ public class Peer {
     private static Socket socket = null;
 
     private static int portFileOwner = 5000; // file owner  args[0]
-    private static int peerAsServer = 5004;
-    private static int peerAsClient = 5005;
+    private static int npeerAsServer = 5004;
+    private static int npeerAsClient = 5005;
     private static int portDownload = -1; // Server to download the file args[1]
     private static int portUpload = -1; // For uploading to server args[2]
     private static Map<Integer, ChunkStatus> mapIDList;  // to store ID list
@@ -79,13 +83,13 @@ public class Peer {
         // Create two threads
 
         //Downloading thread (Client)
-        PeerAsClient peerAsClient = new PeerAsClient(5001, peerList);
+        peer5.PeerAsClient peerAsClient = new peer5.PeerAsClient(npeerAsServer, peerList);
         Thread downloadingThread = new Thread(peerAsClient);
         downloadingThread.start();
 
         //Uploading Thread (Server)
-        PeerAsServer peerAsServer = new PeerAsServer();
-        peerAsServer.main(5002, 1,peerList);
+        peer5.PeerAsServer peerAsServer = new peer5.PeerAsServer();
+        peerAsServer.main(npeerAsClient, 1, peerList);
 
 
         while (true) {
@@ -103,7 +107,7 @@ public class Peer {
 
                 String dir = new File(".").getCanonicalPath();
                 String fileName = m.getKey() + ".bin";
-                File fileDownload = new File(dir + "\\src\\db\\" + fileName);  // TODO remove this hardcode
+                File fileDownload = new File(dir + "\\src\\peer5\\" + fileName);  // TODO remove this hardcode
                 byte[] uploadData = new byte[m.getValue().size];
                 InputStream is = socket.getInputStream();
                 is.read(uploadData);

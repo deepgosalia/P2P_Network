@@ -1,5 +1,7 @@
 package peer5;
 
+import fileOwner.ChunkStatus;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -74,8 +76,10 @@ public class PeerAsClient implements Runnable {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    break; // TODO remove this while dealing with chunk
+                    //break; // TODO remove this while dealing with chunk
                 }
+            }else{
+                System.out.println("ID List is same");
             }
 
 
@@ -90,7 +94,7 @@ public class PeerAsClient implements Runnable {
 
                 String dir = new File(".").getCanonicalPath();
                 String fileName = m + ".bin";
-                File fileDownload = new File(dir + "\\src\\db\\" + fileName);  // TODO remove this hardcode
+                File fileDownload = new File(dir + "\\src\\peer5\\" + fileName);  // TODO remove this hardcode
                 byte[] uploadData = new byte[peerList.get(m).size];
                 InputStream is = socket.getInputStream();
                 is.read(uploadData);

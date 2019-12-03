@@ -1,5 +1,7 @@
 package peer1;
 
+import fileOwner.ChunkStatus;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Map;
@@ -11,8 +13,8 @@ public class Peer {
     private static Socket socket = null;
 
     private static int portFileOwner = 5000; // file owner  args[0]
-    private static int peerAsServer = 5005;
-    private static int peerAsClient = 5001;
+    private static int npeerAsServer = 5005;
+    private static int npeerAsClient = 5001;
 
     // means it will need to get data from somewhere
     // then it will act as server
@@ -82,13 +84,13 @@ public class Peer {
         // Create two threads
 
         //Downloading thread (Client)
-        PeerAsClient peerAsClient = new PeerAsClient(5001, peerList);
+        peer1.PeerAsClient peerAsClient = new peer1.PeerAsClient(npeerAsServer, peerList);
         Thread downloadingThread = new Thread(peerAsClient);
         downloadingThread.start();
 
         //Uploading Thread (Server)
-        PeerAsServer peerAsServer = new PeerAsServer();
-        peerAsServer.main(5002, 1, peerList);
+        peer1.PeerAsServer peerAsServer = new peer1.PeerAsServer();
+        peerAsServer.main(npeerAsClient, 1, peerList);
 
 
         while (true) {
@@ -106,7 +108,7 @@ public class Peer {
 
                 String dir = new File(".").getCanonicalPath();
                 String fileName = m.getKey() + ".bin";
-                File fileDownload = new File(dir + "\\src\\db\\" + fileName);  // TODO remove this hardcode
+                File fileDownload = new File(dir + "\\src\\peer1\\" + fileName);  // TODO remove this hardcode
                 byte[] uploadData = new byte[m.getValue().size];
                 InputStream is = socket.getInputStream();
                 is.read(uploadData);

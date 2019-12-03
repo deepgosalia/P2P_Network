@@ -143,7 +143,7 @@ public class Server implements Runnable {
 
             String[] input = request.split(":"); // TODO what if the command is invalid
             String dir = new File(".").getCanonicalPath();
-            File fileUpload = new File(dir + "\\src\\" + input[1] + "." + "bin");
+            File fileUpload = new File(dir + "\\src\\fileOwner\\" + input[1] + "." + "bin");
             byte[] byteData = new byte[(int) fileUpload.length()];
             FileInputStream fileInputStream = new FileInputStream(fileUpload);
             fileInputStream.read(byteData);
