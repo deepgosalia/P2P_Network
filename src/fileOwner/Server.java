@@ -1,7 +1,10 @@
+package fileOwner;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /*Server will handle multiple client requests
  * */
@@ -16,7 +19,7 @@ public class Server implements Runnable {
     public int chunkEnd;
     public static Map<Integer,Integer> ownerList;
 
-    private Server(Socket socket, int no, int chunkStart, int chunkEnd, MetaFile mf,Map<Integer,Integer>ownerList) throws IOException {
+    private Server(Socket socket, int no, int chunkStart, int chunkEnd, MetaFile mf, Map<Integer,Integer>ownerList) throws IOException {
         this.idList = ownerList;
         this.metaFile = mf;
         this.chunkEnd = chunkEnd;
@@ -28,7 +31,7 @@ public class Server implements Runnable {
     }
 
     public static void main(String[] args) throws IOException {
-        int portNumber = 8000;
+        int portNumber = 5000;
         int peerNo = 0;
         Splitter splitter = new Splitter();
         System.out.println("Dividing files into chunk");
@@ -139,7 +142,7 @@ public class Server implements Runnable {
             }
 
             String[] input = request.split(":"); // TODO what if the command is invalid
-            String dir = new java.io.File(".").getCanonicalPath();
+            String dir = new File(".").getCanonicalPath();
             File fileUpload = new File(dir + "\\src\\" + input[1] + "." + "bin");
             byte[] byteData = new byte[(int) fileUpload.length()];
             FileInputStream fileInputStream = new FileInputStream(fileUpload);

@@ -1,3 +1,5 @@
+package peer2;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Map;
@@ -8,14 +10,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Peer {
     private static Socket socket = null;
 
-    private static int portFileOwner = 8000; // file owner  args[0]
+    private static int portFileOwner = 5000; // file owner  args[0]
+    private static int peerAsServer = 5001;
+    private static int peerAsClient = 5002;
     private static int portDownload = -1; // Server to download the file args[1]
     private static int portUpload = -1; // For uploading to server args[2]
     private static Map<Integer, ChunkStatus> mapIDList;  // to store ID list
     private static Map<String, String> mapFileMeta;
     private static String hostName = "localhost";
 
-    static ConcurrentHashMap<Integer,ChunkStatus> peerList;
+    static ConcurrentHashMap<Integer, ChunkStatus> peerList;
     private static PrintWriter printWriter = null;
     private static BufferedReader bufferedReader = null;
 
@@ -92,12 +96,12 @@ public class Peer {
     }
 
     private static void requestChunks() throws IOException {  //TODO edge case where you end here
-        for (Map.Entry<Integer,ChunkStatus> m : mapIDList.entrySet()) {
+        for (Map.Entry<Integer, ChunkStatus> m : mapIDList.entrySet()) {
             if(!m.getValue().received){
                 System.out.println("Requesting chunk ["+ m.getKey()+"] from fileOwner");
                 printWriter.println("CHUNK:"+m.getKey());
 
-                String dir = new java.io.File(".").getCanonicalPath();
+                String dir = new File(".").getCanonicalPath();
                 String fileName = m.getKey() + ".bin";
                 File fileDownload = new File(dir + "\\src\\db\\" + fileName);  // TODO remove this hardcode
                 byte[] uploadData = new byte[m.getValue().size];

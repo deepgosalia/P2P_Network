@@ -1,8 +1,8 @@
+package peer3;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PeerAsServer implements Runnable {
@@ -12,11 +12,11 @@ public class PeerAsServer implements Runnable {
     private int clientNo = 1;
     private int ownPort = -1;
 
-    ConcurrentHashMap<Integer,ChunkStatus> peerList;
+    ConcurrentHashMap<Integer, ChunkStatus> peerList;
     public PeerAsServer(){
 
     }
-    public PeerAsServer(Socket socket,int no,ConcurrentHashMap<Integer,ChunkStatus> peerList) throws IOException{
+    public PeerAsServer(Socket socket,int no,ConcurrentHashMap<Integer, ChunkStatus> peerList) throws IOException{
         this.socket = socket;
         this.peerList = peerList;
         this.clientNo = no;
@@ -24,7 +24,7 @@ public class PeerAsServer implements Runnable {
         printWriter = new PrintWriter(socket.getOutputStream(), true);
     }
 
-    public void main(int ownPort, int clientNo, ConcurrentHashMap<Integer,ChunkStatus> peerList) throws IOException {
+    public void main(int ownPort, int clientNo, ConcurrentHashMap<Integer, ChunkStatus> peerList) throws IOException {
         ServerSocket serverSocket = new ServerSocket(ownPort);
         while (true){
             socket = serverSocket.accept();
@@ -90,7 +90,7 @@ public class PeerAsServer implements Runnable {
             }
 
             String[] input = request.split(":"); // TODO what if the command is invalid
-            String dir = new java.io.File(".").getCanonicalPath();
+            String dir = new File(".").getCanonicalPath();
             File fileUpload = new File(dir + "\\src\\" + input[1] + "." + "bin"); // TODO change to db
             byte[] byteData = new byte[(int) fileUpload.length()];
             FileInputStream fileInputStream = new FileInputStream(fileUpload);

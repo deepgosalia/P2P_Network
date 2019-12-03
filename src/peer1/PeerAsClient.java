@@ -1,8 +1,9 @@
+package peer1;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PeerAsClient implements Runnable {
@@ -87,7 +88,7 @@ public class PeerAsClient implements Runnable {
                 System.out.println("Requesting chunk ["+ m+"] from fileOwner");
                 printWriter.println("CHUNK:"+m);
 
-                String dir = new java.io.File(".").getCanonicalPath();
+                String dir = new File(".").getCanonicalPath();
                 String fileName = m + ".bin";
                 File fileDownload = new File(dir + "\\src\\db\\" + fileName);  // TODO remove this hardcode
                 byte[] uploadData = new byte[peerList.get(m).size];
