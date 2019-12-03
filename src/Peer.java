@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*Client denotes a peer
  * */
@@ -10,9 +11,11 @@ public class Peer {
     private static int portFileOwner = 8000; // file owner  args[0]
     private static int portDownload = -1; // Server to download the file args[1]
     private static int portUpload = -1; // For uploading to server args[2]
-    private static Map<Integer, Integer> map;  // to store ID list
+    private static Map<Integer, ChunkStatus> mapIDList;  // to store ID list
+    private static Map<String, String> mapFileMeta;
     private static String hostName = "localhost";
 
+    static ConcurrentHashMap<Integer,ChunkStatus> peerList;
     private static PrintWriter printWriter = null;
     private static BufferedReader bufferedReader = null;
 
@@ -45,12 +48,26 @@ public class Peer {
                 if (ack.equals("OK")) {
                     getIDListFromOwner();
                     getIDList = true;
-                    break; // TODO remove this while dealing with chunk
+                    //break; // TODO remove this while dealing with chunk
                 }
             }
-            if (!getChunk) {
-
+            System.out.println("Requesting meta data of file");
+            printWriter.println("GET_META_FILE");
+            String ack = bufferedReader.readLine();
+            if (ack.equals("OK")) {
+                getMetaFile();
+                //getIDList = true;
+               // break; // TODO remove this while dealing with chunk
             }
+
+            System.out.println("Requesting chunks from server");
+            printWriter.println("GET_CHUNKS");
+            ack = bufferedReader.readLine();
+            if (ack.equals("READY")) {
+                requestChunks();
+                break; // TODO remove this while dealing with chunk
+            }
+
 
             //TODO Should we close the connection with the file owner??
 
@@ -58,13 +75,13 @@ public class Peer {
         // Create two threads
 
         //Downloading thread (Client)
-        PeerAsClient peerAsClient = new PeerAsClient(5001);
+        PeerAsClient peerAsClient = new PeerAsClient(5001, peerList);
         Thread downloadingThread = new Thread(peerAsClient);
         downloadingThread.start();
 
         //Uploading Thread (Server)
         PeerAsServer peerAsServer = new PeerAsServer();
-        peerAsServer.main(5002,1);
+        peerAsServer.main(5002, 1);
 
 
         while (true) {
@@ -74,13 +91,51 @@ public class Peer {
 
     }
 
+    private static void requestChunks() throws IOException {  //TODO edge case where you end here
+        for (Map.Entry<Integer,ChunkStatus> m : mapIDList.entrySet()) {
+            if(!m.getValue().received){
+                System.out.println("Requesting chunk ["+ m.getKey()+"] from fileOwner");
+                printWriter.println("CHUNK:"+m.getKey());
+
+                String dir = new java.io.File(".").getCanonicalPath();
+                String fileName = m.getKey() + ".bin";
+                File fileDownload = new File(dir + "\\src\\db\\" + fileName);  // TODO remove this hardcode
+                byte[] uploadData = new byte[m.getValue().size];
+                InputStream is = socket.getInputStream();
+                is.read(uploadData);
+                FileOutputStream fileOutputStream = new FileOutputStream(fileDownload);
+                fileOutputStream.write(uploadData);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+                m.getValue().received = true;
+                System.out.println("Received chunk ["+ m.getKey()+"] from fileOwner");
+
+            }
+        }
+        printWriter.println("CLOSE");
+        peerList = new ConcurrentHashMap<>(mapIDList);
+        printWriter.flush();
+    }
+
+    private static void getMetaFile() throws IOException, ClassNotFoundException {
+        InputStream is = socket.getInputStream();
+        ObjectInputStream objectInputStream = new ObjectInputStream(is);
+        Object temp = objectInputStream.readObject();
+        mapFileMeta = (Map) temp;
+        System.out.println("Received meta file from file Owner");
+        for (Map.Entry<String, String> m : mapFileMeta.entrySet()) {
+            System.out.println(m.getKey() + "->" + m.getValue());
+        }
+        //System.out.println("Received meta file from the server ");  // TODO remove nchunks
+    }
+
     private static void getIDListFromOwner() throws IOException, ClassNotFoundException {
         InputStream is = socket.getInputStream();
         ObjectInputStream objectInputStream = new ObjectInputStream(is);
         Object temp = objectInputStream.readObject();
-        Map<Integer, Integer> map = (Map) temp;
+        mapIDList = (Map) temp;
         System.out.println("Received all the IDs from file Owner");
-        for (Map.Entry<Integer, Integer> m : map.entrySet()) {
+        for (Map.Entry<Integer, ChunkStatus> m : mapIDList.entrySet()) {
             System.out.println(m.getKey() + "->" + m.getValue());
         }
     }

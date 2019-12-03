@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PeerAsClient implements Runnable{
     private PrintWriter printWriter = null;
@@ -11,9 +12,10 @@ public class PeerAsClient implements Runnable{
     private String hostName = "localHost";
     private Socket socket;
     private int ownID = 1;
-
-    public PeerAsClient(int serverPortNumber) throws IOException {
+    private ConcurrentHashMap<Integer,ChunkStatus> map;
+    public PeerAsClient(int serverPortNumber,ConcurrentHashMap<Integer,ChunkStatus> map) throws IOException {
         this.serverPortNumber = serverPortNumber;
+        this.map = map;
     }
 
 
@@ -36,6 +38,12 @@ public class PeerAsClient implements Runnable{
 
         // request for chunks and save it
         while (true){
+            // get id list
+            
+            compareList();
+            // compare
+
+            // request missing
 
         }
     }
