@@ -21,12 +21,20 @@ public class PeerAsClient implements Runnable {
     private int ownID = 1;
     int count = 0;
     private ConcurrentHashMap<Integer, ChunkStatus> peerList;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
     private Map<String, String> mapFileMeta;
     public PeerAsClient(int serverPortNumber, ConcurrentHashMap<Integer, ChunkStatus> map, Map<String, String> mapFileMeta) throws IOException {
         this.serverPortNumber = serverPortNumber;
         this.peerList = map;
         this.mapFileMeta = mapFileMeta;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
     @Override
     public void run() {
         // Establish connection with the Server
@@ -45,7 +53,9 @@ public class PeerAsClient implements Runnable {
             }
         }
 
+
         // request for chunks and save it
+<<<<<<< HEAD
         int i = 0;
         count = peerList.size();
         boolean receivedAll = false;
@@ -64,11 +74,31 @@ public class PeerAsClient implements Runnable {
             if(!receivedAll) {
                 List<Integer> diff = null;
                 //System.out.println("Requesting ID list from the file owner");
+=======
+        boolean receivedAll = false;
+        count = peerList.size();
+        while (true) {
+            if (count>=Integer.parseInt(mapFileMeta.get("FILE_CHUNKS")) && !receivedAll) {
+                System.out.println("Received all chunks");
+                receivedAll = true;
+                try {
+                    FileJoin f = new FileJoin(true);
+                    f.main("\\src\\peer4\\");
+                } catch (IOException e) {
+//                    e.printStackTrace();
+                }
+                //break;
+            }
+            if(!receivedAll){
+                List<Integer> diff = null;
+   //             System.out.println("Requesting ID list from the peer");
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                 printWriter.println("GET_ID_LIST");
                 ConcurrentHashMap<Integer, ChunkStatus> list = null;
                 try {
                     list = getIDListFromPeer();
                     diff = compareList(list);
+                    System.out.println("Peer 4 has this difference:"+diff );
                 } catch (IOException | ClassNotFoundException e) {
                     //e.printStackTrace();
                 }
@@ -94,7 +124,11 @@ public class PeerAsClient implements Runnable {
 //            }
 
                 if (diff != null) {
+<<<<<<< HEAD
                     System.out.println("Requesting Chunks from peer");
+=======
+                    System.out.println("Requesting these Chunks from peer 3"+diff);
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                     printWriter.println("GET_CHUNKS");
 //                try {
 //                    ack = bufferedReader.readLine();
@@ -104,7 +138,11 @@ public class PeerAsClient implements Runnable {
 
                     try {
                         requestChunks(diff);
+<<<<<<< HEAD
                     } catch (IOException | ClassNotFoundException | InterruptedException e) {
+=======
+                    } catch (IOException e) {
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                         //e.printStackTrace();
                     }
 //                if (!ack.equals("NOT_READY")) {
@@ -114,9 +152,12 @@ public class PeerAsClient implements Runnable {
                 } else {
                     //System.out.println("ID List is same");
                 }
+<<<<<<< HEAD
 
+=======
+//    break;
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
             }
-
 
         }
     }
@@ -125,7 +166,11 @@ public class PeerAsClient implements Runnable {
         for (Integer m : diff) {
             if(!peerList.get(m).received){
                 System.out.println("Requesting chunk ["+ m+"] from peer");
+<<<<<<< HEAD
                 printWriter.println("CHUNK:"+m); //CHUNK:1
+=======
+                printWriter.println("CHUNK:"+m);
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
 
                 String dir = new File(".").getCanonicalPath();
                 String fileName = m + ".bin";
@@ -133,6 +178,7 @@ public class PeerAsClient implements Runnable {
 
 
                 InputStream is = socket.getInputStream();
+<<<<<<< HEAD
                 ObjectInputStream objectInputStream = new ObjectInputStream(is);
                 Object temp = objectInputStream.readObject();
                 ChunkObj obj = (ChunkObj) temp;
@@ -153,6 +199,13 @@ public class PeerAsClient implements Runnable {
 //                fileOutputStream.write(uploadData,0,    uploadData.length);
 //                fileOutputStream.flush();
 //                fileOutputStream.close();
+=======
+                is.read(uploadData,0,uploadData.length);
+                FileOutputStream fileOutputStream = new FileOutputStream(fileDownload);
+                fileOutputStream.write(uploadData,0,uploadData.length);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                 peerList.get(m).received = true;
                 count++;
                 System.out.println("Received chunk ["+ m+"] from Peer");
@@ -162,7 +215,12 @@ public class PeerAsClient implements Runnable {
 
         printWriter.println("CLOSE");
         printWriter.flush();
+<<<<<<< HEAD
 
+=======
+//        System.out.println(bufferedReader.readLine());
+//        System.exit(1);
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
     }
     private ConcurrentHashMap<Integer, ChunkStatus> getIDListFromPeer() throws IOException, ClassNotFoundException {
         List<Integer> list = new ArrayList<>();

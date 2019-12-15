@@ -65,7 +65,10 @@ public class PeerAsServer implements Runnable {
 //                            System.out.println("Error while sending file list");
 //
 //                        }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                         break;
 
                     case "GET_CHUNKS":
@@ -78,7 +81,10 @@ public class PeerAsServer implements Runnable {
 //                        }catch (Exception e){
 //                            System.out.println("Error while sending data");
 //                        }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                         break;
                     // TODO
                 }
@@ -107,6 +113,7 @@ public class PeerAsServer implements Runnable {
 
             String[] input = request.split(":"); // TODO what if the command is invalid
             String dir = new File(".").getCanonicalPath();
+<<<<<<< HEAD
 
 
 
@@ -131,6 +138,15 @@ public class PeerAsServer implements Runnable {
 //            OutputStream os = this.socket.getOutputStream();
 //            os.write(byteData,0,byteData.length);
 //            os.flush();
+=======
+            File fileUpload = new File(dir + "\\src\\peer5\\" + input[1] + "." + "bin"); // TODO change to db
+            byte[] byteData = new byte[(int) fileUpload.length()];
+            FileInputStream fileInputStream = new FileInputStream(fileUpload);
+            fileInputStream.read(byteData,0,byteData.length);
+            OutputStream os = this.socket.getOutputStream();
+            os.write(byteData,0,byteData.length);
+            os.flush();
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
             System.out.println("Sent Chunk:["+input[1]+"] to peer"+clientNo);
 
         }

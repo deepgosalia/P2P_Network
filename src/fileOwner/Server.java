@@ -154,6 +154,7 @@ public class Server implements Runnable {
             File fileUpload = new File(dir + "\\src\\fileOwner\\" + input[1] + "." + "bin");
 
 
+<<<<<<< HEAD
             String path = dir + "\\src\\fileOwner\\" + input[1] + "." + "bin";
             byte[] array = Files.readAllBytes(Paths.get(path));
             ChunkObj chunk = new ChunkObj(array);
@@ -161,16 +162,35 @@ public class Server implements Runnable {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(chunk);
             objectOutputStream.flush();
+=======
+//            String path = dir + "\\src\\fileOwner\\" + input[1] + "." + "bin";
+//            byte[] array = Files.readAllBytes(Paths.get(path));
+//            ChunkObj chunk = new ChunkObj(array);
+//            OutputStream outputStream = socket.getOutputStream();
+//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+//            objectOutputStream.writeObject(chunk);
+//            objectOutputStream.flush();
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
 
 
 
 
+<<<<<<< HEAD
 //            byte[] byteData = new byte[(int) fileUpload.length()];
 //            FileInputStream fileInputStream = new FileInputStream(fileUpload);
 //            fileInputStream.read(byteData,0,byteData.length);
 //            OutputStream os = this.socket.getOutputStream();
 //            os.write(byteData,0,byteData.length);
 //            os.flush();
+=======
+            byte[] byteData = new byte[(int) fileUpload.length()];
+            FileInputStream fileInputStream = new FileInputStream(fileUpload);
+            fileInputStream.read(byteData,0,byteData.length);
+            OutputStream os = this.socket.getOutputStream();
+            os.write(byteData,0,byteData.length);
+
+            os.flush();
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
             System.out.println("Sent Chunk:["+input[1]+"] to peer"+no);
 
         }

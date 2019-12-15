@@ -131,6 +131,7 @@ public class Peer {
 
 
                 InputStream is = socket.getInputStream();
+<<<<<<< HEAD
                 ObjectInputStream objectInputStream = new ObjectInputStream(is);
                 Object temp = objectInputStream.readObject();
                 ChunkObj obj = (ChunkObj) temp;
@@ -151,6 +152,13 @@ public class Peer {
 //                fileOutputStream.write(uploadData,0,uploadData.length);
 //                fileOutputStream.flush();
 //                fileOutputStream.close();
+=======
+                is.read(uploadData,0,uploadData.length);
+                FileOutputStream fileOutputStream = new FileOutputStream(fileDownload);
+                fileOutputStream.write(uploadData,0,uploadData.length);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                 m.getValue().received = true;
                 System.out.println("Received chunk [" + m.getKey() + "] from fileOwner");
 

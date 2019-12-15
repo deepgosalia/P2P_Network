@@ -56,6 +56,7 @@ public class PeerAsClient implements Runnable {
             if (count>=Integer.parseInt(mapFileMeta.get("FILE_CHUNKS")) && !receivedAll) {
                 System.out.println("Received all chunks");
                 receivedAll = true;
+<<<<<<< HEAD
                 try {
                     FileJoin.main("\\src\\peer3\\");
                 } catch (IOException e) {
@@ -78,6 +79,27 @@ public class PeerAsClient implements Runnable {
                 }
 
 
+=======
+                try {FileJoin f = new FileJoin(true);
+                    f.main("\\src\\peer3\\");
+                } catch (IOException e) {
+//                    e.printStackTrace();
+                }
+                //break;
+            }
+            if (!receivedAll) {
+                List<Integer> diff = null;
+                //System.out.println("Requesting ID list from the file owner");
+                printWriter.println("GET_ID_LIST");
+                ConcurrentHashMap<Integer, ChunkStatus> list = null;
+                try {
+                    list = getIDListFromPeer();
+                    diff = compareList(list);
+                } catch (IOException | ClassNotFoundException e) {
+                    //e.printStackTrace();
+                }
+
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
 
 //            String ack = null;
 //            try {
@@ -101,7 +123,10 @@ public class PeerAsClient implements Runnable {
                 if (diff != null) {
                     System.out.println("Requesting Chunks from peer");
                     printWriter.println("GET_CHUNKS");
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
 //                try {
 //                    ack = bufferedReader.readLine();
 //                } catch (IOException e) {
@@ -110,7 +135,11 @@ public class PeerAsClient implements Runnable {
 
                     try {
                         requestChunks(diff);
+<<<<<<< HEAD
                     } catch (IOException | ClassNotFoundException | InterruptedException e) {
+=======
+                    } catch (IOException e) {
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                         //e.printStackTrace();
                     }
 //                if (!ack.equals("NOT_READY")) {
@@ -133,6 +162,7 @@ public class PeerAsClient implements Runnable {
     private void requestChunks(List<Integer> diff) throws IOException, ClassNotFoundException, InterruptedException {  //TODO edge case where you end here
         for (Integer m : diff) {
             if (!peerList.get(m).received) {
+<<<<<<< HEAD
 
 
                 while (true){
@@ -189,6 +219,25 @@ public class PeerAsClient implements Runnable {
 //                fileOutputStream.flush();
 //                fileOutputStream.close();
 
+=======
+                System.out.println("Requesting chunk [" + m + "] from peer");
+
+                printWriter.println("CHUNK:" + m); //CHUNK:1
+
+                String dir = new File(".").getCanonicalPath();
+                String fileName = m + ".bin";
+                File fileDownload = new File(dir + "\\src\\peer3\\" + fileName);  // TODO remove this hardcode
+                byte[] uploadData = new byte[peerList.get(m).size];
+                InputStream is = socket.getInputStream();
+                is.read(uploadData,0,uploadData.length);
+                FileOutputStream fileOutputStream = new FileOutputStream(fileDownload);
+                fileOutputStream.write(uploadData,0,uploadData.length);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+                peerList.get(m).received = true;
+                count++;
+                System.out.println("Received chunk [" + m + "] from Peer");
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
 
             }
         }

@@ -54,9 +54,16 @@ public class PeerAsClient implements Runnable {
                 System.out.println("Received all chunks");
                 receivedAll = true;
                 try {
+<<<<<<< HEAD
                     FileJoin.main("\\src\\peer5\\");
                 } catch (IOException e) {
                     //e.printStackTrace();
+=======
+                    FileJoin f = new FileJoin(true);
+                    f.main("\\src\\peer5\\");
+                } catch (IOException e) {
+//                    e.printStackTrace();
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                 }
                 //break;
             }
@@ -73,7 +80,10 @@ public class PeerAsClient implements Runnable {
                 }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
 //            String ack = null;
 //            try {
 //
@@ -104,7 +114,11 @@ public class PeerAsClient implements Runnable {
 
                     try {
                         requestChunks(diff);
+<<<<<<< HEAD
                     } catch (IOException | ClassNotFoundException | InterruptedException e) {
+=======
+                    } catch (IOException e) {
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                         //e.printStackTrace();
                     }
 //                if (!ack.equals("NOT_READY")) {
@@ -135,6 +149,7 @@ public class PeerAsClient implements Runnable {
 
 
                 InputStream is = socket.getInputStream();
+<<<<<<< HEAD
                 ObjectInputStream objectInputStream = new ObjectInputStream(is);
                 Object temp = objectInputStream.readObject();
                 ChunkObj obj = (ChunkObj) temp;
@@ -159,6 +174,13 @@ public class PeerAsClient implements Runnable {
 //                fileOutputStream.write(uploadData,0,uploadData.length);
 //                fileOutputStream.flush();
 //                fileOutputStream.close();
+=======
+                is.read(uploadData,0,uploadData.length);
+                FileOutputStream fileOutputStream = new FileOutputStream(fileDownload);
+                fileOutputStream.write(uploadData,0,uploadData.length);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
                 peerList.get(m).received = true;
                 count++;
                 System.out.println("Received chunk ["+ m+"] from Peer");

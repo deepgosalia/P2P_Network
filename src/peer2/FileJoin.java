@@ -6,6 +6,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileJoin {
+<<<<<<< HEAD
+=======
+    boolean is_false;
+    FileJoin(){
+
+    }
+    FileJoin(boolean flag){
+        this.is_false = flag;
+    }
+
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
     public static void main(String path) throws IOException {
 
 
@@ -22,6 +33,11 @@ public class FileJoin {
 
 
         try {
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 9f37baaaa59b986b849e7c4427d224c4612afa38
             FileOutputStream fos = new FileOutputStream(new_path);
             int x = 1;
             int read_bytes;
