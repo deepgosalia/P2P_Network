@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileJoin {
-    public void main() throws IOException {
+    public void main(String path) throws IOException {
 
 
         //It will store the bytes of file in it and then we will break it
@@ -18,7 +18,7 @@ public class FileJoin {
 
         String newFileName = "test_new";
         String extension = ".pdf";
-        String new_path = current_dir + "\\" + newFileName + extension;
+        String new_path = current_dir + path + newFileName + extension;
 
 
         try {
@@ -27,7 +27,7 @@ public class FileJoin {
             int read_bytes;
             String parts_name_path = "";
             while (true) {
-                parts_name_path = current_dir + "\\" + x + ".bin";
+                parts_name_path = current_dir + path + x + ".bin";
 
                 File f = new File(parts_name_path);
                 if (f.exists()) {
