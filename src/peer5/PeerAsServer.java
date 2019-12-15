@@ -14,6 +14,7 @@ public class PeerAsServer implements Runnable {
     private int clientNo = 1;
     private int ownPort = -1;
 
+
     ConcurrentHashMap<Integer, ChunkStatus> peerList;
     public PeerAsServer(){
 
@@ -28,6 +29,7 @@ public class PeerAsServer implements Runnable {
 
     public void main(int ownPort, int clientNo, ConcurrentHashMap<Integer, ChunkStatus> peerList) throws IOException {
         ServerSocket serverSocket = new ServerSocket(ownPort);
+
         while (true){
             socket = serverSocket.accept();
             PeerAsServer peerAsServer = new PeerAsServer(socket,clientNo,peerList);
@@ -38,6 +40,8 @@ public class PeerAsServer implements Runnable {
     }
     @Override
     public void run() {
+
+         //5
         System.out.println("Peer neighbour no " + clientNo + " is connected");
         try {
             //Send ID list to the server
@@ -46,30 +50,35 @@ public class PeerAsServer implements Runnable {
                 input = bufferedReader.readLine();
                 switch (input) {
                     case "GET_ID_LIST":
-                        try {
-                            printWriter.println("OK");
-                            printWriter.flush(); // Send ack
-                            System.out.println("Sending ID list to peer");
-                            this.sendIDList();
-                        } catch (IOException e) {
-                            System.out.println("Error while sending file list");
-                        }
+                        this.sendIDList();
+                        System.out.println("Sending ID list to peer");
+//                        try {
+//                            printWriter.println("OK");
+//                            printWriter.flush(); // Send ack
+//                            //System.out.println("Sending ID list to peer");
+//                            this.sendIDList();
+//                        } catch (IOException e) {
+//
+//                            System.out.println("Error while sending file list");
+//
+//                        }
                         break;
 
                     case "GET_CHUNKS":
-                        try {
-                            printWriter.println("READY");
-                            System.out.println("Server [READY] to send chunks");
-                            printWriter.flush();
-                            this.sendChunks();
-                        }catch (Exception e){
-                            System.out.println("Error while sending data");
-                        }
+                        this.sendChunks();
+//                        try {
+//                            printWriter.println("READY");
+//                            System.out.println("Server [READY] to send chunks");
+//                            printWriter.flush();
+//
+//                        }catch (Exception e){
+//                            System.out.println("Error while sending data");
+//                        }
                         break;
                     // TODO
                 }
 
-
+//break;
             }
         } catch (Exception e) {
             System.out.println("Peer" + clientNo + " Disconnected");
@@ -77,7 +86,7 @@ public class PeerAsServer implements Runnable {
             try {
                 bufferedReader.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             printWriter.close();
         }
@@ -96,9 +105,9 @@ public class PeerAsServer implements Runnable {
             File fileUpload = new File(dir + "\\src\\peer5\\" + input[1] + "." + "bin"); // TODO change to db
             byte[] byteData = new byte[(int) fileUpload.length()];
             FileInputStream fileInputStream = new FileInputStream(fileUpload);
-            fileInputStream.read(byteData);
+            fileInputStream.read(byteData,0,byteData.length);
             OutputStream os = this.socket.getOutputStream();
-            os.write(byteData);
+            os.write(byteData,0,byteData.length);
             os.flush();
             System.out.println("Sent Chunk:["+input[1]+"] to peer"+clientNo);
 
@@ -111,10 +120,11 @@ public class PeerAsServer implements Runnable {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(peerList);
             objectOutputStream.flush();
-            System.out.println("ID List shared with peer" + clientNo);
+
+            // System.out.println("ID List shared with peer" + clientNo);
 
         } catch (NullPointerException | FileNotFoundException exception) {
-            System.out.println(exception);
+            //System.out.println(exception);
         }
     }
 

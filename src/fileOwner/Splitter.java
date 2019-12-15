@@ -4,10 +4,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
 public class Splitter {
 
+    public byte[] temp;
+
+    String fileName = "test";
+    String fileExtension = "pdf";
     public MetaFile main(Map<Integer,Integer> map) throws IOException {
 
         // Default values:
@@ -22,9 +28,12 @@ public class Splitter {
         String s;
 
 
+
         String current_dir = new File(".").getCanonicalPath();
         String path = current_dir + "\\src\\fileOwner\\" + fileName + "." + fileExtension; // TODO remove src while submitting code \\ is for windows
 
+//        File file = new File(path);
+//        temp = Files.readAllBytes(file.toPath());
         String extension = ".bin";  // To store as binary data
 
         FileInputStream fis = new FileInputStream(path);
@@ -32,6 +41,8 @@ public class Splitter {
         while (fis.available() != 0) {
             j = 0;
             s = current_dir + "\\src\\fileOwner\\" + x + extension;
+
+
             FileOutputStream fos = new FileOutputStream(s);
             while (j <= 100000 && fis.available() != 0) {  // TODO 100000 ?????
                 read_bytes = fis.read(binaryData, 0, 102400); // 100KB chunks
@@ -49,6 +60,15 @@ public class Splitter {
         fis.close();
 
         return metaFile;
+    }
+    public byte[] chunksRange() throws IOException {
+
+        String current_dir = new File(".").getCanonicalPath();
+        String path = current_dir + "\\src\\fileOwner\\" + fileName + "." + fileExtension; // TODO remove src while submitting code \\ is for windows
+        temp = new byte[102400];
+        File file = new File(path);
+        temp = Files.readAllBytes(file.toPath());
+        return temp;
     }
 
 }

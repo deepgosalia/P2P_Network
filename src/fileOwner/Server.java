@@ -3,6 +3,8 @@ package fileOwner;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,34 +86,39 @@ public class Server implements Runnable {
                 input = bufferedReader.readLine();
                 switch (input) {
                     case "GET_ID_LIST":
-                        try {
-                            printWriter.println("OK");
-                            printWriter.flush(); // Send ack
-                            System.out.println("Sending ID list to peer");
-                            this.sendIDList();
-                        } catch (IOException e) {
-                            System.out.println("Error while sending file list");
-                        }
+                        System.out.println("Sending ID list to peer");
+                        this.sendIDList();
+//                        try {
+//                            printWriter.println("OK");
+//                            printWriter.flush(); // Send ack
+//                            System.out.println("Sending ID list to peer");
+//                            this.sendIDList();
+//                        } catch (IOException e) {
+//                            System.out.println("Error while sending file list");
+//                        }
                         break;
                     case "GET_META_FILE":
-                        try {
-                            printWriter.println("OK");
-                            printWriter.flush();
-                            this.sendMetaFile();
-                            //this.sendIDList();
-                        }catch (Exception e){
-                            System.out.println("Error while sending data");
-                        }
+                        this.sendMetaFile();
+//                        try {
+//                            printWriter.println("OK");
+//                            printWriter.flush();
+//                            this.sendMetaFile();
+//                            //this.sendIDList();
+//                        }catch (Exception e){
+//                            System.out.println("Error while sending data");
+//                        }
                         break;
                     case "GET_CHUNKS":
-                        try {
-                            printWriter.println("READY");
-                            System.out.println("Server [READY] to send chunks");
-                            printWriter.flush();
-                            this.sendChunks();
-                        }catch (Exception e){
-                            System.out.println("Error while sending data");
-                        }
+                        System.out.println("Server [READY] to send chunks");
+                        this.sendChunks();
+//                        try {
+//                            printWriter.println("READY");
+//                            System.out.println("Server [READY] to send chunks");
+//                            printWriter.flush();
+//                            this.sendChunks();
+//                        }catch (Exception e){
+//                            System.out.println("Error while sending data");
+//                        }
                         break;
                     // TODO
                 }
@@ -124,7 +131,7 @@ public class Server implements Runnable {
             try {
                 bufferedReader.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             printWriter.close();
         }
@@ -143,12 +150,27 @@ public class Server implements Runnable {
 
             String[] input = request.split(":"); // TODO what if the command is invalid
             String dir = new File(".").getCanonicalPath();
+           // String path = dir + "\\src\\fileOwner\\" + input[1] + "." + "bin";
             File fileUpload = new File(dir + "\\src\\fileOwner\\" + input[1] + "." + "bin");
+
+
+//            String path = dir + "\\src\\fileOwner\\" + input[1] + "." + "bin";
+//            byte[] array = Files.readAllBytes(Paths.get(path));
+//            ChunkObj chunk = new ChunkObj(array);
+//            OutputStream outputStream = socket.getOutputStream();
+//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+//            objectOutputStream.writeObject(chunk);
+//            objectOutputStream.flush();
+
+
+
+
             byte[] byteData = new byte[(int) fileUpload.length()];
             FileInputStream fileInputStream = new FileInputStream(fileUpload);
-            fileInputStream.read(byteData);
+            fileInputStream.read(byteData,0,byteData.length);
             OutputStream os = this.socket.getOutputStream();
-            os.write(byteData);
+            os.write(byteData,0,byteData.length);
+
             os.flush();
             System.out.println("Sent Chunk:["+input[1]+"] to peer"+no);
 
@@ -173,7 +195,7 @@ public class Server implements Runnable {
             System.out.println("Meta file sent to peer" + no);
 
         } catch (NullPointerException | FileNotFoundException exception) {
-            System.out.println(exception);
+            //System.out.println(exception);
         }
     }
 
@@ -191,7 +213,7 @@ public class Server implements Runnable {
             System.out.println("ID List sent to peer" + no);
 
         } catch (NullPointerException | FileNotFoundException exception) {
-            System.out.println(exception);
+           // System.out.println(exception);
         }
     }
 }

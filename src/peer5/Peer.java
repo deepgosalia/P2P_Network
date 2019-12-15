@@ -15,8 +15,8 @@ public class Peer {
     private static Socket socket = null;
 
     private static int portFileOwner = 5000; // file owner  args[0]
-    private static int npeerAsServer = 5004;
-    private static int npeerAsClient = 5005;
+    private static int serverThreadPort = 5004;
+    private static int ownThreadPortNo = 5005;
     private static int portDownload = -1; // Server to download the file args[1]
     private static int portUpload = -1; // For uploading to server args[2]
     private static Map<Integer, ChunkStatus> mapIDList;  // to store ID list
@@ -49,32 +49,43 @@ public class Peer {
         boolean getIDList = false;
         boolean getChunk = false;
         while (true) {
-            if (!getIDList) {
-                System.out.println("Requesting ID list from the file owner");
-                printWriter.println("GET_ID_LIST");
-                String ack = bufferedReader.readLine();
-                if (ack.equals("OK")) {
-                    getIDListFromOwner();
-                    getIDList = true;
-                    //break; // TODO remove this while dealing with chunk
-                }
-            }
-            System.out.println("Requesting meta data of file");
+            printWriter.println("GET_ID_LIST");
+            printWriter.flush();
+            System.out.println("Requesting ID list from the file owner");
+            getIDListFromOwner();
+//            if (!getIDList) {
+//                System.out.println("Requesting ID list from the file owner");
+//                printWriter.println("GET_ID_LIST");
+//                String ack = bufferedReader.readLine();
+//                if (ack.equals("OK")) {
+//                    getIDListFromOwner();
+//                    getIDList = true;
+//                    //break; // TODO remove this while dealing with chunk
+//                }
+//            }
             printWriter.println("GET_META_FILE");
-            String ack = bufferedReader.readLine();
-            if (ack.equals("OK")) {
-                getMetaFile();
-                //getIDList = true;
-               // break; // TODO remove this while dealing with chunk
-            }
+            printWriter.flush();
+            System.out.println("Requesting meta data of file");
+            getMetaFile();
+            // printWriter.println("GET_META_FILE");
+            // String ack = bufferedReader.readLine();
+//            if (ack.equals("OK")) {
+//                getMetaFile();
+//                //getIDList = true;
+//               // break; // TODO remove this while dealing with chunk
+//            }
 
-            System.out.println("Requesting chunks from server");
             printWriter.println("GET_CHUNKS");
-            ack = bufferedReader.readLine();
-            if (ack.equals("READY")) {
-                requestChunks();
-                break; // TODO remove this while dealing with chunk
-            }
+            printWriter.flush();
+            System.out.println("Requesting chunks from server");
+            requestChunks();
+            break;
+//            printWriter.println("GET_CHUNKS");
+//            ack = bufferedReader.readLine();
+//            if (ack.equals("READY")) {
+//                requestChunks();
+//                break; // TODO remove this while dealing with chunk
+//            }
 
 
             //TODO Should we close the connection with the file owner??
@@ -83,13 +94,13 @@ public class Peer {
         // Create two threads
 
         //Downloading thread (Client)
-        peer5.PeerAsClient peerAsClient = new peer5.PeerAsClient(npeerAsServer, peerList);
+        peer5.PeerAsClient peerAsClient = new peer5.PeerAsClient(serverThreadPort, peerList,mapFileMeta);
         Thread downloadingThread = new Thread(peerAsClient);
         downloadingThread.start();
 
         //Uploading Thread (Server)
         peer5.PeerAsServer peerAsServer = new peer5.PeerAsServer();
-        peerAsServer.main(npeerAsClient, 1, peerList);
+        peerAsServer.main(ownThreadPortNo, 1, peerList);  // TODO change this client No
 
 
         while (true) {
@@ -110,9 +121,12 @@ public class Peer {
                 File fileDownload = new File(dir + "\\src\\peer5\\" + fileName);  // TODO remove this hardcode
                 byte[] uploadData = new byte[m.getValue().size];
                 InputStream is = socket.getInputStream();
-                is.read(uploadData);
+
+               
+
+                is.read(uploadData,0,uploadData.length);
                 FileOutputStream fileOutputStream = new FileOutputStream(fileDownload);
-                fileOutputStream.write(uploadData);
+                fileOutputStream.write(uploadData,0,uploadData.length);
                 fileOutputStream.flush();
                 fileOutputStream.close();
                 m.getValue().received = true;
